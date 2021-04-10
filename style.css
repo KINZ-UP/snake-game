@@ -23,11 +23,19 @@ canvas {
   margin-right: left;
 }
 
+#side-bar {
+  height: 600px;
+  margin-left: 10px;
+  margin-right: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+#manual,
 #dashboard {
   border: 1px solid black;
   padding: 20px;
-  margin-left: 10px;
-  margin-right: auto;
 }
 
 select {
@@ -54,4 +62,53 @@ button:hover {
 h1 {
   margin-top: 0;
   margin-bottom: 30px;
+}
+
+#manual {
+  height: 180px;
+}
+
+#manual h2 {
+  margin-top: 0;
+  margin-bottom: 17px;
+}
+
+.direction-keys-container {
+  display: flex;
+}
+
+.key {
+  width: 45px;
+  height: 45px;
+  font-weight: normal;
+  border: 1px solid black;
+  border-radius: 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 25px;
+  box-shadow: 1px 1px 2px black;
+  cursor: pointer;
+}
+
+.key-container > p {
+  font-weight: normal;
+  text-align: center;
+  font-size: 11px;
+  margin-top: 7px;
+}
+
+.right-key-container {
+  margin-left: 15px;
+}
+
+.space-key-container {
+  margin-top: 5px;
+  width: 115px;
+}
+
+.space-key {
+  font-size: 15px;
+  width: 100%;
+  height: 40px;
 }

@@ -4,7 +4,7 @@ export default class App {
     const oldCanvas = document.getElementById("canvas");
     gameContainer.removeChild(oldCanvas);
 
-    const dashboard = document.getElementById("dashboard");
+    const dashboard = document.getElementById("side-bar");
     const canvas = document.createElement("canvas");
     canvas.setAttribute("id", "canvas");
     canvas.width = 600;
@@ -257,7 +257,6 @@ export default class App {
   }
 
   pressKey({ code }) {
-    console.log(code);
     switch (code) {
       case "ArrowLeft": {
         switch (this.direct) {
@@ -295,6 +294,7 @@ export default class App {
             return;
         }
       }
+      // pause & resume
       case "Space": {
         if (this.onGoing) {
           window.clearInterval(this.animation);
@@ -305,6 +305,7 @@ export default class App {
         this.animation = window.setInterval(this.animate.bind(this), 500);
         return;
       }
+      // restart
       case "KeyR": {
         window.clearInterval(this.animation);
         this.initialize();
