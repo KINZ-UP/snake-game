@@ -4,7 +4,7 @@ export default class App {
     const oldCanvas = document.getElementById("canvas");
     gameContainer.removeChild(oldCanvas);
 
-    const dashboard = document.getElementById("dashboard");
+    const dashboard = document.getElementById("side-bar");
     const canvas = document.createElement("canvas");
     canvas.setAttribute("id", "canvas");
     canvas.width = 600;
@@ -20,14 +20,14 @@ export default class App {
     this.numUnit = numUnit || 15;
     this.unitSpacing = this.canvasWidth / this.numUnit;
 
-    const initCoord = Math.floor(this.numUnit / 2);
+    this.initCoord = Math.floor(this.numUnit / 2);
     this.paddingRatio = 0.1;
     this.padding = this.unitSpacing * this.paddingRatio;
     this.unitSize = this.unitSpacing - this.padding * 2;
 
     this.headCoord = {
-      x: initCoord,
-      y: initCoord,
+      x: this.initCoord,
+      y: this.initCoord,
     };
     this.headPos = {
       x: this.headCoord.x * this.unitSpacing,
@@ -55,6 +55,7 @@ export default class App {
     this.failureWindowSize = { width: 500, height: 300 };
     this.makeRandomPray();
 
+    this.onGoing = true;
     this.animation = window.setInterval(this.animate.bind(this), 500);
     document.body.addEventListener("keydown", this.pressKey.bind(this));
 
@@ -63,6 +64,40 @@ export default class App {
     this.scoreBox.innerText = +0;
     this.highScoreBox = document.getElementById("high-score-box");
     this.highScore = parseInt(this.highScoreBox.innerText) || 0;
+  }
+
+  initialize() {
+    this.headCoord = {
+      x: this.initCoord,
+      y: this.initCoord,
+    };
+    this.headPos = {
+      x: this.headCoord.x * this.unitSpacing,
+      y: this.headCoord.y * this.unitSpacing,
+    };
+
+    this.snake = [];
+    this.snake.push({ ...this.headCoord });
+    this.direct = "up";
+
+    this.remain = this.numUnit ** 2 - 1;
+    this.board = Array.from({ length: this.numUnit }, () =>
+      Array(this.numUnit).fill(0)
+    );
+
+    this.board[this.headCoord.y][this.headCoord.x] = 1;
+
+    this.initTime = 0;
+    this.timeUnit = 1;
+    this.timeSpacing = 500;
+
+    this.success = false;
+    this.failed = false;
+    this.failureEffectIdx = 0;
+    this.failureWindowSize = { width: 500, height: 300 };
+    this.makeRandomPray();
+
+    this.onGoing = true;
   }
 
   update() {
@@ -223,26 +258,60 @@ export default class App {
 
   pressKey({ code }) {
     switch (code) {
-      case "ArrowUp": {
-        if (this.direct === "up" || this.direct === "down") return;
-        this.direct = "up";
-        return;
-      }
-      case "ArrowDown": {
-        if (this.direct === "up" || this.direct === "down") return;
-        this.direct = "down";
-        return;
-      }
       case "ArrowLeft": {
-        if (this.direct === "left" || this.direct === "right") return;
-        this.direct = "left";
+        switch (this.direct) {
+          case "up":
+            this.direct = "left";
+            return;
+          case "right":
+            this.direct = "up";
+            return;
+          case "down":
+            this.direct = "right";
+            return;
+          case "left":
+            this.direct = "down";
+            return;
+          default:
+            return;
+        }
       }
       case "ArrowRight": {
-        if (this.direct === "left" || this.direct === "right") return;
-        this.direct = "right";
+        switch (this.direct) {
+          case "up":
+            this.direct = "right";
+            return;
+          case "right":
+            this.direct = "down";
+            return;
+          case "down":
+            this.direct = "left";
+            return;
+          case "left":
+            this.direct = "up";
+            return;
+          default:
+            return;
+        }
+      }
+      // pause & resume
+      case "Space": {
+        if (this.onGoing) {
+          window.clearInterval(this.animation);
+          this.onGoing = false;
+          return;
+        }
+        this.onGoing = true;
+        this.animation = window.setInterval(this.animate.bind(this), 500);
         return;
       }
-
+      // restart
+      case "KeyR": {
+        window.clearInterval(this.animation);
+        this.initialize();
+        this.animation = window.setInterval(this.animate.bind(this), 500);
+        return;
+      }
       default:
         return;
     }
